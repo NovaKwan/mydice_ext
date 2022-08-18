@@ -1,20 +1,15 @@
-let out = 0
-let myimg: Image = null
-let clap_count=0
-let c_numofclaps=2
-let lasttimestamp = input.runningTime()
-/**
- * global variables
- */
-input.onSound(DetectedSound.Loud, mysoundtrigged)
-
-function mysoundtrigged() {
-    if lasttilasttimestamp < 
+let cflag=0
+function mysoundtrigged () {
+    cflag = 1
     input.onSound(DetectedSound.Loud, function () { })
-
+    if (lasttimestamp <= input.runningTime() + 1000) {
+        clap_count += 1
+    } else {
+        clap_count = 3
+    }
     input.onSound(DetectedSound.Loud, mysoundtrigged)
+    cflag = 0
 }
-
 function der_der_der_ () {
     basic.clearScreen()
     SuperBit.RGB_Program().setPixelColor(0, neopixel.colors(NeoPixelColors.Blue))
@@ -138,7 +133,30 @@ function der_der_der_ () {
     myimg.showImage(0)
     music.playTone(1000, music.beat(BeatFraction.Eighth))
 }
-
+function dothing () {
+    input.onSound(DetectedSound.Loud, function () { })
+der_der_der_()
+    input.onSound(DetectedSound.Loud, mysoundtrigged)
+}
+let myimg: Image = null
+let out = 0
+let clap_count = 0
+let lasttimestamp = 0
+input.setSoundThreshold(SoundThreshold.Loud, 154)
+let c_numofclaps = 2
+let c_defineclapcounttime = 1000
+lasttimestamp = input.runningTime()
+input.onSound(DetectedSound.Loud, mysoundtrigged)
 basic.forever(function () {
-	
+    if (cflag == 1)
+        return
+    if (input.runningTime() > lasttimestamp + 2000) 
+    {
+        // ready to check
+        if (clap_count == 2) {
+            dothing()
+        }
+        lasttimestamp = input.runningTime()
+        clap_count = 0
+    }
 })
